@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tempo Atual</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="index.js" defer></script>
+</head>
+<body>
+    <main>
+        <section class="controle">
+            
+            <label for="idcidade">Confira o clima de sua cidade</label>
+
+            <div class="topo">
+                <input type="text" id="idcidade" placeholder="Digite o nome da cidade" maxlength="80">
+                <button class="bi bi-search" id="idbtnpesquisar"></button>
+            </div><!-- Fim | topo -->
+
+            <hr class="linha">
+
+            <div class="descricao ocultar" id="idDescricao">
+
+                <h2 id="idNomeCidade"><i class="bi bi-geo-alt"></i></h2>
+
+                <p id="idTemperatura"></p>
+
+                <div class="descricaoCondicao" id="idDescricaoCondicao">
+                    <img id="weather-icon" src="" alt="Condições atuais">
+                </div>
+
+                <div class="iconesTempo">
+                    
+                    <div id="idUmidade">
+                        <i class="bi bi-droplet-half"></i>
+                    </div>
+
+                    <div id="idVento">
+                        <i class="bi bi-wind"></i>
+                    </div>
+                </div>
+            
+            </div><!-- Fim | descricao -->
+
+
+
+            <div class="ocultar" id="msgErro">
+                <p>Não foi possível encontrar o clima de uma cidade com este nome.</p>
+                <hr class="linha">
+            </div>
+
+            
+            <div class="sugestoes">
+                <button id="viena">Viena</button>
+                <button id="copenhague">Copenhague</button>
+                <button id="zurique">Zurique</button>
+                <button id="vancouver">Vancouver</button>
+                <button id="genebra">Genebra</button>
+                <button id="frankfurt">Frankfurt</button>
+                <button id="osaka">Osaka</button>
+                <button id="maceio">Maceió</button>
+            </div>
+
+        </section><!-- Fim | controle -->
+    </main>
+</body>
+</html>
