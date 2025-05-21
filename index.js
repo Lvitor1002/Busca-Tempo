@@ -1,76 +1,86 @@
+import { ApiRepository } from './ApiRepository.js'
 
-
-const inputCidade = document.getElementById("idcidade")
+const campoDescricao = document.getElementById("idDescricao")
+const cidadeInput = document.getElementById("idcidade")
 const btnPesquisar = document.getElementById("idbtnpesquisar")
-const campoGeral = document.getElementById("idDescricao")
-
-let campoCidade = document.getElementById("idNomeCidade")
-let campoTemperatura = document.getElementById("idTemperatura")
-let campoDescricao = document.getElementById("idDescricaoCondicao")
-let campoUmidade = document.querySelector("#idUmidade i")
-let campoVento = document.querySelector("#idVento i")
-
-let campoErro = document.getElementById("msgErro")
-
-let paisesSugestoes = document.querySelectorAll(".sugestoes button")
 
 
-btnPesquisar.addEventListener("click",function(evento){
-    
-    let cidade = inputCidade.value
-    ExibirDadosTempo(cidade)
-    
-})
+const campoNomeCidade = document.getElementById("idNomeCidade")
+const campoTemperaturaCidade = document.getElementById("idTemperatura")
+const campoDescricaoCondicao = document.getElementById("idDescricaoCondicao")
+const valorUmidade = document.querySelector("#idUmidade .valor-umidade");
+const iconeVento = document.querySelector("#idVento i")
 
-async function BuscaAPI(cidade){
-    
-    const urlAPI = `https://api.openweathermap.org/data/2.5/weather?q=${cidade}&units=metric&appid=f21a8d622729b65c5c64a547cdfc80b6&lang=pt_br`
+const sugestoes = document.querySelectorAll(".sugestoes button")
 
-    const resposta = await fetch(urlAPI) 
-    const dados = await resposta.json()
 
-    return dados
-}
+const api = new ApiRepository()
 
-async function ExibirDadosTempo(cidade){
+btnPesquisar.addEventListener("click",async function(evento){
 
-    const dados = await BuscaAPI(cidade)
+    const cidade = cidadeInput.value.trim() 
 
-    if(dados.name === undefined){
-        campoErro.classList.remove("ocultar")
-        campoGeral.classList.add("ocultar")
+    if (cidade === "" || !/^[A-Za-zÀ-ÿ\s]+$/i.test(cidade)) {
+
+        campoDescricao.classList.add("ocultar")
+
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: `Não foi possível encontrar uma cidade com este nome.`,
+        });
         return
     }
-    campoErro.classList.add("ocultar")  
 
-    campoCidade.innerText = dados.name
-    campoTemperatura.innerText = `${parseInt(dados.main.temp)}°C` 
-    campoDescricao.innerText = dados.weather[0].description
-    campoUmidade.innerText = `${dados.main.humidity}%`
-    campoVento.innerText = `${dados.wind.speed}Km/h`
+    try {
+
+        await buscarDados(cidade)
+        cidadeInput.value = ""
+
+    } catch (erro) {
+
+        // Erro já tratado internamente
+    }
+    
+})
 
 
-    campoGeral.classList.remove("ocultar")
-}
-
-inputCidade.addEventListener("keyup",function(evento){
-
-    //Verificando se foi pressionado o ENTER para seguir..
-    if(evento.code === "Enter"){
-
-        let cidade = evento.target.value
+async function buscarDados(cidade) {
+    
+    try {
+        const dados = await api.buscarDados(cidade);
         
-        ExibirDadosTempo(cidade)
+        if (!dados || dados.name === undefined){
+            campoDescricao.classList.add("ocultar") 
+            return
+        }
+        
+        campoNomeCidade.textContent = dados.name
+        campoDescricaoCondicao.textContent = dados.weather[0].description
+        campoTemperaturaCidade.textContent = `${parseInt(dados.main.temp)}°C`
+        valorUmidade.textContent = `${dados.main.humidity}%`
+        iconeVento.textContent = `${dados.wind.speed}Km/h`
+        
+        campoDescricao.classList.remove("ocultar")
+        
+
+    } catch (erro) { 
+
+        campoDescricao.innerHTML = ""
+        campoDescricao.classList.add("ocultar") // Oculta em caso de erro
+
+        console.error("Erro ao exibir dados:", erro)
     }
 
-})
+}
 
+sugestoes.forEach((pais) => {
+    
+    pais.addEventListener("click", function(evento){
 
-paisesSugestoes.forEach((pais)=>{
+        const escolhido = evento.target.textContent
 
-    pais.addEventListener("click",function(evento){
-        inputCidade.value = evento.target.textContent
+        cidadeInput.value = escolhido
+        
     })
 })
-
-
